@@ -13,12 +13,14 @@ Then use the CrossMap.py script to generate a mapping of a file of genomic coord
 ## Example:
 
 ### Filter the raw nucmer output:
+```
   NUC_DIR="nucmer_output"
   for path in $NUC_DIR/*.delta; do
     file=`basename $path .delta`
     delta-filter -q $path -i 99.5 -l 1000 > $NUC_DIR/$file.filter
     show-coords -rclT $NUC_DIR/$file.filter > $NUC_DIR/$file.coords
   done &
+```
 
 ### Calculate the chain file:
 ```shell
