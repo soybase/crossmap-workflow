@@ -1,4 +1,5 @@
 # crossmap-workflow
+The objectives of this workflow are to develop a mapping between genomic assemblies, starting from nucmer comparisons of the assemblies. This is facilitated by the script "delta_to_chain.pl", which generates a chain file from MUMmer's delta-format files. Given the chain file, CrossMap can generate a new mapping of genomic features.
 
 ## Basic workflow:
 Run nucmer on each chromosome and scaffold against the whole genome assembly (to allow each region
