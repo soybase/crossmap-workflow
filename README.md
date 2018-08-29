@@ -1,15 +1,28 @@
 # crossmap-workflow
-The objectives of this workflow are to develop a mapping between genomic assemblies, starting from nucmer comparisons of the assemblies. This is facilitated by the script "delta_to_chain.pl", which generates a chain file from MUMmer's delta-format files. Given the chain file, CrossMap can generate a new mapping of genomic features.
+The objective of this workflow is to develop a mapping between genomic assemblies, starting from nucmer comparisons of the assemblies. 
+This is facilitated by the script "crossmap_delta_to_chain.pl", which generates a chain file from MUMmer's delta-format files. 
+Then, given the chain file, CrossMap (or equivalently, liftOver) can generate a new mapping of genomic features.
 
 ## Basic workflow:
 Run nucmer on each chromosome and scaffold against the whole genome assembly (to allow each region
 to find its best home on the whole genome), then filter using the MUMmer utility delta-filter
 (recommend parameters for a lenient mapping between genome assemblies: -i 99.5 -l 1000).
 
-Then use the script delta_to_chain.pl in this repository to generate a "chain" file from the
-delta-format .filter files.
+Then use the script crossmap_delta_to_chain.pl in this repository to generate "chain" files from the
+delta-format .filter files. 
 
-Then use the CrossMap.py script (http://crossmap.sourceforge.net) to generate a mapping of a file of genomic coordinates. The instructions below assume local installation of the MUMmer package and CrossMap. Note that CrossMap can be easily installed using Conda, e.g.
+This process requires a couple of additional steps due to an apparent with liftOver and CrossMap.
+As of late 2018, it seems that liftOver and CrossMap are doing the wrong thing
+with inversions, so this script produces two chain files: one for forward
+alignments and one for inversions. The one for inversions transforms the
+coords as the Q chromosome length minus the original coordinates, in + orientation.
+The results need to be recovered afterwards as Qchr size - transated coordinates.
+
+Then use the CrossMap.py script (http://crossmap.sourceforge.net) to generate a mapping of a file of genomic coordinates. 
+
+Finally, recover the corrected coordinates from the mapped features in inverted regions, using the script crossmap_recover_rev_coords.pl.
+
+The instructions below assume local installation of the MUMmer package and CrossMap. Note that CrossMap can be easily installed using Conda, e.g.
 ```
   conda install -c bioconda mummer 
   conda install -c bioconda crossmap
@@ -28,16 +41,23 @@ Note: see the RESULTS in sample_nucmer/. To save space, the raw delta files have
   done &
 ```
 
-### Calculate the chain file:
+### Calculate the chain files:
 ```shell
-  ./scripts/delta_to_chain.pl sample_nucmer/*filter \
-    > sample_out/nucmer_r.v1.q.v2.id995_len1k.chain
+  /scripts/crossmap_delta_to_chain.pl -fwd work/all_FWD.chain -rev work/all_REV.chain work/all_r.v1.q.v2.filter
 ```
 
-### Calculate the mapping with CrossMap
+### Use the chain files to map features in a supplied BED file. Do this for both the FWD and REV chain files.
 ```shell
-  CrossMap.py bed sample_out/nucmer_r.v1.q.v2.id995_len1k.chain sample_snps/soysnp50k.a1.pos_named \
-    > sample_out/nucmer_r.v1.q.v2.id995_len1k.mapped_named
+  CrossMap.py bed work/all_FWD.chain sample_snps/SNP50K_Wm82.a1.bed | grep -v Fail > work/all_map_a1_a2_fwd.tsv
+  CrossMap.py bed work/all_REV.chain sample_snps/SNP50K_Wm82.a1.bed | grep -v Fail > work/all_map_a1_a2_rev_TMP
 ```
+
+### Make file of query chromosome & scaffold sizes (derived from filter files)
+	grep -h '>' sample_nucmer/*filter | sed 's/>//' | awk -v OFS="\t" '{print $2, $4}' |
+    sort -u > work/Q_chr_sizes.tsv
+
+### Recover (translate) the reverse mappings
+  scripts/crossmap_recover_rev_coords.pl -q work/Q_chr_sizes.tsv \
+		-m work/all_map_a1_a2_rev_TMP -o work/all_map_a1_a2_rev.tsv
 
 
