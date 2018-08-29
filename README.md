@@ -53,11 +53,15 @@ Note: see the RESULTS in sample_nucmer/. To save space, the raw delta files have
 ```
 
 ### Make file of query chromosome & scaffold sizes (derived from filter files)
+```shell
 	grep -h '>' sample_nucmer/*filter | sed 's/>//' | awk -v OFS="\t" '{print $2, $4}' |
     sort -u > work/Q_chr_sizes.tsv
+```
 
 ### Recover (translate) the reverse mappings
+```shell
   scripts/crossmap_recover_rev_coords.pl -q work/Q_chr_sizes.tsv \
 		-m work/all_map_a1_a2_rev_TMP -o work/all_map_a1_a2_rev.tsv
+```
 
 
