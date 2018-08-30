@@ -51,7 +51,7 @@
       0.996843  # Result: 99.68% of ALL locations are the same (most of the mismatches don't map at all).)
 
   cat sample_out/compare_crossmapped_a2.x.gbrowse_a2.tsv | 
-    awk -v OFS="\t" '$3==$6 && NF==7 {same++} $3!=$6 && NF==7 {not++} END{print same/(same+not)}'
+    awk -v OFS="\t" '$3==$6 && NF==7 {same++} $3!=$6 && NF==7 {not++} END{print same, not, same/(same+not)}'
       0.999341  # Result: 99.93% of the MAPPED locations are the same.
 
 
