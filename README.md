@@ -11,12 +11,10 @@ to find its best home on the whole genome), then filter using the MUMmer utility
 Then use the script crossmap_delta_to_chain.pl in this repository to generate "chain" files from the
 delta-format .filter files. 
 
-This process requires a couple of additional steps due to an apparent with liftOver and CrossMap.
-As of late 2018, it seems that liftOver and CrossMap are doing the wrong thing
-with inversions, so this script produces two chain files: one for forward
-alignments and one for inversions. The one for inversions transforms the
-coords as the Q chromosome length minus the original coordinates, in + orientation.
-The results need to be recovered afterwards as Qchr size - transated coordinates.
+This process requires a couple of additional steps due to an apparent problem with liftOver and CrossMap. As of late 2018, it seems that liftOver and CrossMap are doing the wrong thing
+with inversions, so the crossmap_delta_to_chain.pl script produces two chain files: one for forward
+alignments and one for inversions. The chain file for inversions transforms the
+coords as the query chromosome length minus the original coordinates, in + orientation.
 
 Then use the CrossMap.py script (http://crossmap.sourceforge.net) to generate a mapping of a file of genomic coordinates. 
 
@@ -64,4 +62,5 @@ Note: see the RESULTS in sample_nucmer/. To save space, the raw delta files have
 		-m work/all_map_a1_a2_rev_TMP -o work/all_map_a1_a2_rev.tsv
 ```
 
+The final result (the feature mapping between genome assemblies) is the combination of the following two files: work/all_map_a1_a2_fwd.tsv work/all_map_a1_a2_rev.tsv
 
