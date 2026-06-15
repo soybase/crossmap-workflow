@@ -3,6 +3,11 @@ The objective of this workflow is to develop a mapping between genomic assemblie
 This is facilitated by the script "crossmap_delta_to_chain.pl", which generates a chain file from MUMmer's delta-format files. 
 Then, given the chain file, CrossMap (or equivalently, liftOver) can generate a new mapping of genomic features.
 
+## This repository has been archived and is no longer maintained.
+The code is provided for historical reference and may contain unpatched or unknown vulnerabilities.  
+It should not be used in production systems.
+
+
 ## Basic workflow:
 Run nucmer on each chromosome and scaffold against the whole genome assembly (to allow each region
 to find its best home on the whole genome), then filter using the MUMmer utility delta-filter
