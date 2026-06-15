@@ -5,8 +5,8 @@ Then, given the chain file, CrossMap (or equivalently, liftOver) can generate a 
 
 ## This repository has been archived and is no longer maintained.
 The code is provided for historical reference and may contain unpatched or unknown vulnerabilities.  
-It should not be used in production systems.
-
+It should not be used in production systems.  
+  
 
 ## Basic workflow:
 Run nucmer on each chromosome and scaffold against the whole genome assembly (to allow each region
